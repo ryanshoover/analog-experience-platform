@@ -60,6 +60,8 @@ int value_pullChain1,   prev_pullChain1,
     value_pullChain3,   prev_pullChain3,
     prev_pullChain0                       = 0;
 
+int state_led = LOW;
+long time_led = millis();
 
 // Values that are computed inside the code.
 char value_hex[7] = {0};
@@ -70,10 +72,13 @@ char* command     = "";
 ////////////////////////////////////
 
 // Clear LEDs
-void noLeds() {
-  digitalWrite( LED_BUILTIN, LOW );
-  digitalWrite( light_success, LOW );
-  digitalWrite( light_failure, LOW );
+void maybeTurnOffLEDs() {
+  if ( state_led == HIGH && millis() - time_led > LED_DELAY ) {
+    digitalWrite( LED_BUILTIN, LOW );
+    digitalWrite( light_success, LOW );
+    digitalWrite( light_failure, LOW );
+    state_led = LOW;  
+  }
 }
 
 // Successful result
@@ -81,16 +86,19 @@ void successLed() {
   digitalWrite( LED_BUILTIN, HIGH );
   digitalWrite( light_success, HIGH );
   digitalWrite( light_failure, LOW );
-  delay( LED_DELAY );
-  noLeds();
+
+  state_led = HIGH;
+  time_led  = millis();
 }
 
 // Unsuccessful result
 void unsuccessLed() {
+  digitalWrite( LED_BUILTIN, HIGH );
   digitalWrite( light_success, LOW );
   digitalWrite( light_failure, HIGH );
-  delay( LED_DELAY );
-  noLeds();
+
+  state_led = HIGH;
+  time_led = millis();
 }
 
 // Both LEDs on (Command successfully sent)
@@ -98,8 +106,9 @@ void bothLeds() {
   digitalWrite( LED_BUILTIN, HIGH );
   digitalWrite( light_success, HIGH );
   digitalWrite (light_failure, HIGH );
-  delay( LED_DELAY );
-  noLeds();
+
+  state_led = HIGH;
+  time_led  = millis();
 }
 
 // Flash both 10 times (Request for command received - e.g. button pressed)
@@ -116,12 +125,13 @@ void flashLeds() {
     delay( 100 );
     count -= 1;
   }
-  noLeds();
+
+  state_led = HIGH;
+  time_led  = millis();
 }
 
 // Play this sequence of LEDs when the bridge connection is successful
 void bridgeSuccess() {
-  bothLeds();
   flashLeds();
   successLed();
 }
@@ -175,10 +185,16 @@ void sendCommand( char* success = "Success" ) {
   flashLeds();
   bothLeds();
 
+  // Override the timeout for the bothLeds to turn off. We'll control it manually.
+  state_led = LOW;
+
   Process p;
 
   p.runShellCommand( SSH_PREFIX + " 'wp axp " + command + "'" );
   // Let user know command has been received
+
+  // Command finished. We can turn off the LEDs now.
+  state_led = HIGH;
 
   while ( p.available()  > 0 ) {
     char c = p.read();
@@ -393,6 +409,9 @@ void setup() {
 void loop() {
   // While booting, show booting message?
 
+  // Turn off our LEDs if they're on and it's been long enough
+  maybeTurnOffLEDs()
+
   // Read RGB values
   readRGB();
 
@@ -413,5 +432,5 @@ void loop() {
   cycle_pullChain();
 
   // Delay so we don't overload the Arduino
-  delay(200);
+  delay(100);
 }
