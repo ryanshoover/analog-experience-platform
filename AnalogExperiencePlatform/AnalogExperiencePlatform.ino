@@ -77,7 +77,7 @@ void maybeTurnOffLEDs() {
     digitalWrite( LED_BUILTIN, LOW );
     digitalWrite( light_success, LOW );
     digitalWrite( light_failure, LOW );
-    state_led = LOW;  
+    state_led = LOW;
   }
 }
 
@@ -260,10 +260,8 @@ void toggle_missleLaunch() {
 
 /**
    Toggles the alcohol sensor value
-
-   @return bool Whether the alcohol is higher than our limit.
 */
-bool toggle_alcohol() {
+void toggle_alcohol() {
   value_alcohol = map( analogRead( sensor_alcohol ), 0, 1024, 0, 100 );
 
   if ( value_alcohol >= ALCOHOL_LIMIT && prev_alcohol == LOW ) {
@@ -394,6 +392,8 @@ void setup() {
   // Initialize LCD with static labels
   lcdInit();
 
+  // While booting, show booting message?
+
   // Start the bridge connection
   Bridge.begin();
 
@@ -407,8 +407,6 @@ void setup() {
 //////////////////
 
 void loop() {
-  // While booting, show booting message?
-
   // Turn off our LEDs if they're on and it's been long enough
   maybeTurnOffLEDs()
 
@@ -418,18 +416,21 @@ void loop() {
   // Display loop
   updateDisplay();
 
-  // Loop through our switches, looking for actions
-  toggle_lasers();
-  toggle_sharks();
-  toggle_missleLaunch();
-  toggle_alcohol();
+  // Only act if our alcohol level is acceptable.
+  if ( prev_alcohol != HIGH ) {
+    // Loop through our switches, looking for actions
+    toggle_lasers();
+    toggle_sharks();
+    toggle_missleLaunch();
+    toggle_alcohol();
 
-  detect_flame();
-  detect_fireAlarm();
-  detect_toilet();
-  detect_triggerColor();
+    detect_flame();
+    detect_fireAlarm();
+    detect_toilet();
+    detect_triggerColor();
 
-  cycle_pullChain();
+    cycle_pullChain();
+  }
 
   // Delay so we don't overload the Arduino
   delay(100);
