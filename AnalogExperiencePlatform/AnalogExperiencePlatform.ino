@@ -408,7 +408,7 @@ void setup() {
 
 void loop() {
   // Turn off our LEDs if they're on and it's been long enough
-  maybeTurnOffLEDs()
+  maybeTurnOffLEDs();
 
   // Read RGB values
   readRGB();
