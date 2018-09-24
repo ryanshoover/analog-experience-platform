@@ -19,7 +19,7 @@
 // Testing Variables
 
 // Is the Yun shield active?
-const bool network_enabled = true;
+const bool network_enabled = false;
 
 // Set the LCD I2C address
 LiquidCrystal_I2C LCD(0x3F, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
@@ -490,13 +490,13 @@ void loop() {
     // Loop through our switches, looking for actions
 //    toggle_lasers();
     toggle_sharks();
-//    toggle_missleLaunch();
-//    toggle_alcohol();
+    toggle_missleLaunch();
+    toggle_alcohol();
 
 //    detect_flame();
-//    detect_fireAlarm();
-//    detect_toilet();
-//    detect_triggerColor();
+    detect_fireAlarm();
+    detect_toilet();
+    detect_triggerColor();
 
 //    cycle_pullChain();
   }
