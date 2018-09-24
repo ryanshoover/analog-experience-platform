@@ -15,11 +15,13 @@
  * - Color knobs → Change body (header?) background color
  * - Toilet flush → Visually flush all content on the page
  *****************************************************************************/
-
-// Testing Variables
-
-// Is the Yun shield active?
-const bool network_enabled = false;
+// Settings
+const bool   NETWORK_ENABLED       = false;
+const bool   NO_DISABLE_WHEN_DRUNK = true;
+const int    LED_DELAY             = 2000;
+const int    LOOP_DELAY            = 2000;
+const int    ALCOHOL_LIMIT         = 50;
+const String SSH_PREFIX            = "dbclient -i ~/.ssh/id_dropbear demowpe@demowpe.ssh.wpengine.net";
 
 // Set the LCD I2C address
 LiquidCrystal_I2C LCD(0x3F, 2, 1, 0, 4, 5, 6, 7, 3, POSITIVE);
@@ -46,11 +48,6 @@ const int switch_pullChain2   = 3;
 const int switch_pullChain3   = 2;
 const int switch_triggerColor = 14;
 
-// Static values
-const int LED_DELAY     = 2000;
-const int ALCOHOL_LIMIT = 75;
-const String SSH_PREFIX = "dbclient -i ~/.ssh/id_dropbear demowpe@demowpe.ssh.wpengine.net";
-
 // Initial variables
 byte R, G, B;
 int value_lasers,       prev_lasers       = LOW;
@@ -70,7 +67,7 @@ int state_led = LOW;
 long time_led = millis();
 
 // Values that are computed inside the code.
-char value_hex[7] = {0};
+String value_hex  = "";
 String command    = "";
 
 // Our Process instance for connecting to the Yun shield
@@ -203,10 +200,20 @@ void updateDisplay() {
  * Read the values of the 3 RGB dials
  */
 void readRGB() {
-  R = map( analogRead( dial_red ), 100, 924, 0, 255 );
-  G = map( analogRead( dial_green ), 100, 924, 0, 255 );
-  B = map( analogRead( dial_blue ), 100, 924, 0, 255 );
-  sprintf( value_hex, "%02X%02X%02X", R, G, B );
+  Serial.print( "Dial red: " );
+  Serial.println( analogRead( dial_red ) );
+  
+  R = map( analogRead( dial_red ), 0, 1000, 0, 255 );
+  G = map( analogRead( dial_green ), 0, 1000, 0, 255 );
+  B = map( analogRead( dial_blue ), 0, 1000, 0, 255 );
+
+  value_hex = "";
+  value_hex.concat( String( R, HEX ) );
+  value_hex.concat( String( G, HEX ) );
+  value_hex.concat( String( B, HEX ) );
+
+  Serial.print( "Hex: " );
+  Serial.println( value_hex );
 }
 
 /**
@@ -218,7 +225,7 @@ void sendCommand( char* success = "Success" ) {
   String output = "";
 
   Serial.print("Command: ");
-  Serial.println(command);
+  Serial.println( command );
 
   LCD.setCursor( 4, 3 );
   LCD.print( command.substring( 0, 15 ) );
@@ -227,7 +234,7 @@ void sendCommand( char* success = "Success" ) {
   bothLeds();
 
   // Send the command
-  if ( network_enabled ) {
+  if ( NETWORK_ENABLED ) {
     p.runShellCommand( SSH_PREFIX + " 'wp axp " + command + "'" );
   
     // Read the output.
@@ -327,7 +334,7 @@ void toggle_alcohol() {
     unsuccessLed();
     unsuccessLed();
 
-    command = "wp axp on alcohol";
+    command = "on alcohol";
     sendCommand();
 
     // @todo Display says fahgetabatit?
@@ -393,7 +400,8 @@ void detect_triggerColor() {
   value_triggerColor = digitalRead( switch_triggerColor );
 
   if ( value_triggerColor != prev_triggerColor && value_triggerColor == HIGH ) {
-    command = strcat( "set color ", value_hex );
+    command = "set color ";
+    command.concat( value_hex );
     sendCommand();
   }
 
@@ -456,7 +464,7 @@ void setup() {
   // While booting, show booting message?
 
   // Start the bridge connection
-  if ( network_enabled ) {
+  if ( NETWORK_ENABLED ) {
     Bridge.begin();
   }
 
@@ -486,21 +494,21 @@ void loop() {
   updateDisplay();
 
   // Only act if our alcohol level is acceptable.
-  if ( prev_alcohol != HIGH ) {
+  if ( NO_DISABLE_WHEN_DRUNK || prev_alcohol != HIGH ) {
     // Loop through our switches, looking for actions
 //    toggle_lasers();
-    toggle_sharks();
-    toggle_missleLaunch();
-    toggle_alcohol();
-
+//    toggle_sharks();
+//    toggle_missleLaunch();
+//    toggle_alcohol();
+//
 //    detect_flame();
-    detect_fireAlarm();
-    detect_toilet();
-    detect_triggerColor();
-
+//    detect_fireAlarm();
+//    detect_toilet();
+//    detect_triggerColor();
+//
 //    cycle_pullChain();
   }
 
   // Delay so we don't overload the Arduino
-  delay(1000);
+  delay( LOOP_DELAY );
 }
