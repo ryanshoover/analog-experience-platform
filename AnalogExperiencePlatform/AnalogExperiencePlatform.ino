@@ -69,6 +69,7 @@ long time_led = millis();
 // Values that are computed inside the code.
 String value_hex  = "";
 String command    = "";
+String message    = "";
 
 // Our Process instance for connecting to the Yun shield
 Process p;
@@ -230,15 +231,15 @@ void sendCommand( char* success = "Success" ) {
   // Send the command
   if ( NETWORK_ENABLED ) {
     p.runShellCommand( SSH_PREFIX + " 'wp axp " + command + "'" );
-  
+
     // Read the output.
     while ( p.available()  > 0 ) {
       char c = p.read();
       output += c;
     }
-  
+
     Serial.println( output );
-  
+
     // See if we got a successful response
     if ( output.indexOf( success ) != -1 ) {
       successLed();
