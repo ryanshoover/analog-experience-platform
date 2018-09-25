@@ -285,7 +285,7 @@ void toggle_lasers() {
   value_lasers = digitalRead( switch_lasers );
 
   if ( value_lasers != prev_lasers ) {
-    command = "toggle lasers";
+    command = "pew pew pew";
     sendCommand();
   }
 
@@ -299,7 +299,7 @@ void toggle_sharks() {
   value_sharks = digitalRead( switch_sharks );
 
   if ( value_sharks != prev_sharks ) {
-    command = "toggle sharks";
+    command = "need biggerboat";
     sendCommand();
   }
 
@@ -313,7 +313,7 @@ void toggle_missleLaunch() {
   value_missleLaunch = digitalRead( switch_missleLaunch );
 
   if ( value_missleLaunch != prev_missleLaunch ) {
-    command = "toggle missle-launch";
+    command = "fire ze missles";
     sendCommand();
   }
 
@@ -334,7 +334,7 @@ void toggle_alcohol() {
     unsuccessLed();
     unsuccessLed();
 
-    command = "on alcohol";
+    command = "shots shots shot";
     sendCommand();
 
     // @todo Display says fahgetabatit?
@@ -358,7 +358,7 @@ void detect_flame() {
   value_flame = digitalRead( switch_flame );
 
   if ( value_flame != prev_flame && value_flame == HIGH ) {
-    command = "on flame";
+    command = "all your base";
     sendCommand();
   }
 
@@ -372,7 +372,7 @@ void detect_fireAlarm() {
   value_fireAlarm = digitalRead( switch_fireAlarm );
 
   if ( value_fireAlarm != prev_fireAlarm && value_fireAlarm == HIGH ) {
-    command = "off flame";
+    command = "i know kung fu";
     sendCommand();
   }
 
@@ -386,7 +386,7 @@ void detect_toilet() {
   value_toilet = digitalRead( switch_toilet );
 
   if ( value_toilet != prev_toilet && value_toilet == HIGH ) {
-    command = "on toilet";
+    command = "flush cache";
     sendCommand();
   }
 
@@ -418,17 +418,17 @@ void cycle_pullChain() {
 
   if ( value_pullChain1 != prev_pullChain1 && value_pullChain1 == HIGH ) {
     prev_pullChain0 = LOW;
-    command = "set pullchain 1";
+    command = "millenial";
     sendCommand();
 
   } else if ( value_pullChain2 != prev_pullChain2 && value_pullChain2 == HIGH ) {
     prev_pullChain0 = LOW;
-    command = "set pullchain 2";
+    command = "gen x";
     sendCommand();
 
   } else if ( value_pullChain3 != prev_pullChain3 && value_pullChain3 == HIGH ) {
     prev_pullChain0 = LOW;
-    command = "set pullchain 3";
+    command = "baby boomer";
     sendCommand();
 
   } else if ( prev_pullChain0 != HIGH && value_pullChain1 == LOW && value_pullChain2 == LOW && value_pullChain3 == LOW  ) {
