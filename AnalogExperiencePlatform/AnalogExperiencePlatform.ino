@@ -91,8 +91,8 @@ void maybeTurnOffLEDs() {
 
   if ( turnOff ) {
     digitalWrite( LED_BUILTIN, LOW );
-    digitalWrite( light_success, HIGH );
-    digitalWrite( light_failure, HIGH );
+    digitalWrite( light_success, LOW );
+    digitalWrite( light_failure, LOW );
     state_led = LOW;
   }
 }
@@ -100,8 +100,8 @@ void maybeTurnOffLEDs() {
 // Successful result
 void successLed() {
   digitalWrite( LED_BUILTIN, HIGH );
-  digitalWrite( light_success, LOW );
-  digitalWrite( light_failure, HIGH );
+  digitalWrite( light_success, HIGH );
+  digitalWrite( light_failure, LOW );
 
   state_led = HIGH;
   time_led  = millis();
@@ -110,8 +110,8 @@ void successLed() {
 // Unsuccessful result
 void unsuccessLed() {
   digitalWrite( LED_BUILTIN, LOW );
-  digitalWrite( light_success, HIGH );
-  digitalWrite( light_failure, LOW );
+  digitalWrite( light_success, LOW );
+  digitalWrite( light_failure, HIGH );
 
   state_led = HIGH;
   time_led = millis();
@@ -120,8 +120,8 @@ void unsuccessLed() {
 // Both LEDs on (Command successfully sent)
 void bothLeds() {
   digitalWrite( LED_BUILTIN, HIGH );
-  digitalWrite( light_success, LOW );
-  digitalWrite (light_failure, LOW );
+  digitalWrite( light_success, HIGH );
+  digitalWrite (light_failure, HIGH );
 
   state_led = HIGH;
   time_led  = millis();
