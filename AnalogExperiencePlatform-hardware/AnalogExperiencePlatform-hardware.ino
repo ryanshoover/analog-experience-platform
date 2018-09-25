@@ -202,7 +202,7 @@ void updateDisplay() {
 void readRGB() {
   Serial.print( "Dial red: " );
   Serial.println( analogRead( dial_red ) );
-  
+
   R = map( analogRead( dial_red ), 0, 1000, 0, 255 );
   G = map( analogRead( dial_green ), 0, 1000, 0, 255 );
   B = map( analogRead( dial_blue ), 0, 1000, 0, 255 );
@@ -236,15 +236,15 @@ void sendCommand( char* success = "Success" ) {
   // Send the command
   if ( NETWORK_ENABLED ) {
     p.runShellCommand( SSH_PREFIX + " 'wp axp " + command + "'" );
-  
+
     // Read the output.
     while ( p.available()  > 0 ) {
       char c = p.read();
       output += c;
     }
-  
+
     Serial.println( output );
-  
+
     // See if we got a successful response
     if ( output.indexOf( success ) != -1 ) {
       successLed();
