@@ -446,7 +446,7 @@ void cycle_pullChain() {
   } else if ( prev_pullChain0 != HIGH && value_pullChain1 == LOW && value_pullChain2 == LOW && value_pullChain3 == LOW  ) {
     prev_pullChain0 = HIGH;
     command = "set pullchain 0";
-    message = "off";
+    message = "default";
     sendCommand();
   }
 
