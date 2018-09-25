@@ -222,7 +222,7 @@ void sendCommand( char* success = "Success" ) {
   Serial.println( command );
 
   LCD.setCursor( 4, 3 );
-  LCD.print( command.substring( 0, 15 ) );
+  LCD.print( message.substring( 0, 15 ) );
 
   flashLeds();
   bothLeds();
@@ -248,6 +248,7 @@ void sendCommand( char* success = "Success" ) {
   }
 
   command = "";
+  message = "";
 
   LCD.setCursor( 4, 3 );
   LCD.print( "                " );
@@ -280,6 +281,7 @@ void toggle_lasers() {
 
   if ( value_lasers != prev_lasers ) {
     command = "toggle lasers";
+    message = "pew pew pew";
     sendCommand();
   }
 
@@ -294,6 +296,7 @@ void toggle_sharks() {
 
   if ( value_sharks != prev_sharks ) {
     command = "toggle sharks";
+    message = "need biggerboat";
     sendCommand();
   }
 
@@ -308,6 +311,7 @@ void toggle_missleLaunch() {
 
   if ( value_missleLaunch != prev_missleLaunch ) {
     command = "toggle missle-launch";
+    message = "fire ze missles";
     sendCommand();
   }
 
@@ -329,6 +333,7 @@ void toggle_alcohol() {
     unsuccessLed();
 
     command = "on alcohol";
+    message = "shots shots shot";
     sendCommand();
 
     // @todo Display says fahgetabatit?
@@ -339,6 +344,7 @@ void toggle_alcohol() {
     prev_alcohol = LOW;
 
     command = "off alcohol";
+    message = "sober up";
     sendCommand();
 
     return true;
@@ -353,6 +359,7 @@ void detect_flame() {
 
   if ( value_flame != prev_flame && value_flame == HIGH ) {
     command = "on flame";
+    message = "all your base";
     sendCommand();
   }
 
@@ -367,6 +374,7 @@ void detect_fireAlarm() {
 
   if ( value_fireAlarm != prev_fireAlarm && value_fireAlarm == HIGH ) {
     command = "off flame";
+    message = "i know kung fu";
     sendCommand();
   }
 
@@ -381,6 +389,7 @@ void detect_toilet() {
 
   if ( value_toilet != prev_toilet && value_toilet == HIGH ) {
     command = "on toilet";
+    message = "flush cache";
     sendCommand();
   }
 
@@ -395,6 +404,7 @@ void detect_triggerColor() {
 
   if ( value_triggerColor != prev_triggerColor && value_triggerColor == HIGH ) {
     command = "set color ";
+    message = "set color ";
     command.concat( value_hex );
     sendCommand();
   }
@@ -413,21 +423,25 @@ void cycle_pullChain() {
   if ( value_pullChain1 != prev_pullChain1 && value_pullChain1 == HIGH ) {
     prev_pullChain0 = LOW;
     command = "set pullchain 1";
+    message = "millenial";
     sendCommand();
 
   } else if ( value_pullChain2 != prev_pullChain2 && value_pullChain2 == HIGH ) {
     prev_pullChain0 = LOW;
     command = "set pullchain 2";
+    message = "gen x";
     sendCommand();
 
   } else if ( value_pullChain3 != prev_pullChain3 && value_pullChain3 == HIGH ) {
     prev_pullChain0 = LOW;
     command = "set pullchain 3";
+    message = "baby boomer";
     sendCommand();
 
   } else if ( prev_pullChain0 != HIGH && value_pullChain1 == LOW && value_pullChain2 == LOW && value_pullChain3 == LOW  ) {
     prev_pullChain0 = HIGH;
     command = "set pullchain 0";
+    message = "default";
     sendCommand();
   }
 
